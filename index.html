@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Správa pre Janulku.</title>
   <style>
     body {
@@ -11,11 +11,21 @@
       justify-content: center;
       background: #e3f7ff;
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
     }
     button {
       font-size: 2rem;
       padding: 1rem 2rem;
       cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
     /* Štýl pre modálne okno */
     #modal {
@@ -25,21 +35,24 @@
       background: rgba(0, 0, 0, 0.5);
       justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
     #modalContent {
       background: white;
       padding: 2rem 3rem;
       border-radius: 10px;
       box-shadow: 0 0 15px rgba(0,0,0,0.4);
-      max-width: 300px;
+      max-width: 90vw;      /* na mobile zabráni presahu */
+      width: 320px;         /* max šírka */
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       color: #333;
+      word-wrap: break-word;
     }
     #closeBtn {
       margin-top: 1.5rem;
-      padding: 0.5rem 1.5rem;
-      font-size: 1rem;
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
       cursor: pointer;
       border: none;
       background: #007bff;
@@ -49,6 +62,23 @@
     }
     #closeBtn:hover {
       background: #0056b3;
+    }
+
+    /* Responsívne úpravy pre mobilné zariadenia */
+    @media (max-width: 480px) {
+      button {
+        font-size: 2.5rem;
+        padding: 1.25rem 3rem;
+      }
+      #modalContent {
+        padding: 2rem 1.5rem;
+        font-size: 1.6rem;
+        width: 90vw;
+      }
+      #closeBtn {
+        font-size: 1.4rem;
+        padding: 1rem 3rem;
+      }
     }
   </style>
 </head>
@@ -67,17 +97,14 @@
     const showMessageBtn = document.getElementById('showMessageBtn');
     const closeBtn = document.getElementById('closeBtn');
 
-    // Zobrazenie modálneho okna po kliknutí na tlačidlo
     showMessageBtn.addEventListener('click', () => {
       modal.style.display = 'flex';
     });
 
-    // Zatvorenie modálneho okna po kliknutí na OK
     closeBtn.addEventListener('click', () => {
       modal.style.display = 'none';
     });
 
-    // Alternatívne: zatvorenie modálneho okna klikom mimo obsah
     window.addEventListener('click', (e) => {
       if (e.target === modal) {
         modal.style.display = 'none';
