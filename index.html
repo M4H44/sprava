@@ -2,115 +2,127 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8" />
-  <title>Správa pre .......</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title id="pageTitle">Správa pre Teba 💌</title>
   <style>
     body {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       align-items: center;
       justify-content: center;
       background: #e3f7ff;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
     }
-    button {
+
+    h1 {
       font-size: 2rem;
-      padding: 1rem 2rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      font-size: 1.4rem;
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
       border: none;
       border-radius: 6px;
       background-color: #007bff;
       color: white;
       transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    /* Štýl pre modálne okno */
-    #modal {
-      display: none; /* Skryté štandardne */
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    #modalContent {
-      background: white;
-      padding: 2rem 3rem;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.4);
-      max-width: 90vw;      /* na mobile zabráni presahu */
-      width: 320px;         /* max šírka */
-      text-align: center;
-      font-size: 1.4rem;
-      color: #333;
-      word-wrap: break-word;
-    }
-    #closeBtn {
-      margin-top: 1.5rem;
-      padding: 0.75rem 2rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border: none;
-      background: #007bff;
-      color: white;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    #closeBtn:hover {
-      background: #0056b3;
+      margin-top: 1rem;
     }
 
-    /* Responsívne úpravy pre mobilné zariadenia */
-    @media (max-width: 480px) {
-      button {
-        font-size: 2.5rem;
-        padding: 1.25rem 3rem;
-      }
-      #modalContent {
-        padding: 2rem 1.5rem;
-        font-size: 1.6rem;
-        width: 90vw;
-      }
-      #closeBtn {
-        font-size: 1.4rem;
-        padding: 1rem 3rem;
-      }
+    button:hover { background-color: #0056b3; }
+
+    #adminPanel {
+      display: none;
+      margin-top: 1.5rem;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 320px;
+      text-align: center;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #sprava {
+      font-size: 1.5rem;
+      color: #333;
+      background: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
-  <button id="showMessageBtn">Stlač!!!</button>
+  <div id="sprava">Správa od Maťka: ❤️❤️❤️</div>
 
-  <div id="modal">
-    <div id="modalContent">
-     <p>Správa od Maťka: <strong> ❤️❤️❤️</strong></p>
+  <button id="adminBtn">Admin režim</button>
 
-      <button id="closeBtn">OK</button>
-    </div>
+  <div id="adminPanel">
+    <h2>Uprav obsah</h2>
+    <label>Nový názov stránky:</label>
+    <input type="text" id="newTitle" placeholder="Napr. Správa pre Vanesku 💌">
+    
+    <label style="margin-top:1rem;">Nový text správy:</label>
+    <textarea id="newText" rows="3" placeholder="Zadaj novú správu..."></textarea>
+    
+    <button id="saveBtn">Uložiť zmeny</button>
   </div>
 
   <script>
-    const modal = document.getElementById('modal');
-    const showMessageBtn = document.getElementById('showMessageBtn');
-    const closeBtn = document.getElementById('closeBtn');
+    const adminBtn = document.getElementById('adminBtn');
+    const adminPanel = document.getElementById('adminPanel');
+    const saveBtn = document.getElementById('saveBtn');
+    const spravaDiv = document.getElementById('sprava');
+    const newText = document.getElementById('newText');
+    const newTitle = document.getElementById('newTitle');
+    const pageTitle = document.getElementById('pageTitle');
 
-    showMessageBtn.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
+    // načítanie uložených údajov
+    if (localStorage.getItem('spravaText')) {
+      spravaDiv.innerHTML = localStorage.getItem('spravaText');
+    }
+    if (localStorage.getItem('pageTitle')) {
+      document.title = localStorage.getItem('pageTitle');
+    }
 
-    closeBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.style.display = 'none';
+    // admin režim po zadaní hesla
+    adminBtn.addEventListener('click', () => {
+      const heslo = prompt('Zadaj heslo pre úpravu:');
+      if (heslo === 'Gabika666') { // 🔑 sem si daj svoje heslo
+        adminPanel.style.display = 'block';
+        newText.value = spravaDiv.innerText;
+        newTitle.value = document.title;
+      } else {
+        alert('Nesprávne heslo 😜');
       }
+    });
+
+    // uloženie zmien
+    saveBtn.addEventListener('click', () => {
+      if (newText.value.trim() !== '') {
+        const novaSprava = "Správa od Maťka: <strong>" + newText.value.trim() + "</strong>";
+        spravaDiv.innerHTML = novaSprava;
+        localStorage.setItem('spravaText', novaSprava);
+      }
+      if (newTitle.value.trim() !== '') {
+        document.title = newTitle.value.trim();
+        localStorage.setItem('pageTitle', newTitle.value.trim());
+      }
+      adminPanel.style.display = 'none';
+      alert('Zmeny uložené ✅');
     });
   </script>
 </body>
