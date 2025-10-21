@@ -6,33 +6,75 @@
   <style>
     body {
       display: flex;
-      flex-direction: column;
       height: 100vh;
       align-items: center;
       justify-content: center;
-      background: #e3f7ff;
+      flex-direction: column;
+      background: #d9f3ff;
       font-family: Arial, sans-serif;
       margin: 0;
     }
 
-    h1 {
+    /* hlavné tlačidlo */
+    #showMessageBtn {
       font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    button {
-      font-size: 1.4rem;
-      padding: 0.75rem 1.5rem;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+    #showMessageBtn:hover { background: #0056b3; }
+
+    /* modálne okno */
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #modalContent {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      text-align: center;
+      font-size: 1.4rem;
+      color: #333;
+      max-width: 90vw;
+      width: 320px;
+    }
+    #closeBtn {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #closeBtn:hover { background: #0056b3; }
+
+    /* admin panel */
+    #adminBtn {
+      margin-top: 2rem;
+      background: #007bff;
+      color: white;
       border: none;
       border-radius: 6px;
-      background-color: #007bff;
-      color: white;
-      transition: background-color 0.3s;
-      margin-top: 1rem;
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-
-    button:hover { background-color: #0056b3; }
+    #adminBtn:hover { background: #0056b3; }
 
     #adminPanel {
       display: none;
@@ -55,18 +97,29 @@
       border-radius: 5px;
     }
 
-    #sprava {
-      font-size: 1.5rem;
-      color: #333;
-      background: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    #saveBtn {
+      margin-top: 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 0.6rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
     }
+    #saveBtn:hover { background: #0056b3; }
   </style>
 </head>
 <body>
-  <div id="sprava">Správa od Maťka: ❤️❤️❤️</div>
+
+  <button id="showMessageBtn">Stlač!!!</button>
+
+  <div id="modal">
+    <div id="modalContent">
+      <p id="spravaText">Správa od Maťka: ❤️❤️❤️</p>
+      <button id="closeBtn">OK</button>
+    </div>
+  </div>
 
   <button id="adminBtn">Admin režim</button>
 
@@ -82,28 +135,43 @@
   </div>
 
   <script>
+    const modal = document.getElementById('modal');
+    const showMessageBtn = document.getElementById('showMessageBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const spravaText = document.getElementById('spravaText');
     const adminBtn = document.getElementById('adminBtn');
     const adminPanel = document.getElementById('adminPanel');
     const saveBtn = document.getElementById('saveBtn');
-    const spravaDiv = document.getElementById('sprava');
-    const newText = document.getElementById('newText');
     const newTitle = document.getElementById('newTitle');
-    const pageTitle = document.getElementById('pageTitle');
+    const newText = document.getElementById('newText');
 
     // načítanie uložených údajov
     if (localStorage.getItem('spravaText')) {
-      spravaDiv.innerHTML = localStorage.getItem('spravaText');
+      spravaText.innerHTML = localStorage.getItem('spravaText');
     }
     if (localStorage.getItem('pageTitle')) {
       document.title = localStorage.getItem('pageTitle');
     }
 
+    // po kliknutí na STLAČ zobrazí správu
+    showMessageBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+
+    // zavretie správy
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
     // admin režim po zadaní hesla
     adminBtn.addEventListener('click', () => {
       const heslo = prompt('Zadaj heslo pre úpravu:');
-      if (heslo === 'Gabika666') { // 🔑 sem si daj svoje heslo
+      if (heslo === 'matko123') { // 🔑 tvoje heslo
         adminPanel.style.display = 'block';
-        newText.value = spravaDiv.innerText;
+        newText.value = spravaText.innerText;
         newTitle.value = document.title;
       } else {
         alert('Nesprávne heslo 😜');
@@ -114,7 +182,7 @@
     saveBtn.addEventListener('click', () => {
       if (newText.value.trim() !== '') {
         const novaSprava = "Správa od Maťka: <strong>" + newText.value.trim() + "</strong>";
-        spravaDiv.innerHTML = novaSprava;
+        spravaText.innerHTML = novaSprava;
         localStorage.setItem('spravaText', novaSprava);
       }
       if (newTitle.value.trim() !== '') {
